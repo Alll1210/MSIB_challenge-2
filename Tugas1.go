@@ -9,73 +9,74 @@ import (
 )
 
 func main() {
-	var lSkor1, lSkor2, lSkor3, lumbaSkor int
-	var kSkor1, kSkor2, kSkor3, koalaSkor int
+	// Initialize scores
+	var lumbaScores, koalaScores []int
 
 	reader := bufio.NewReader(os.Stdin)
 
-	fmt.Print("Masukkan skor Pertama Tim Lumba-lumba: ")
-	lSkor1 = getInput(reader)
+	// Input scores for both teams
+	inputScores(reader, "Lumba-lumba", &lumbaScores)
+	inputScores(reader, "Koala", &koalaScores)
 
-	fmt.Print("Masukkan skor Pertama Tim Koala: ")
-	kSkor1 = getInput(reader)
+	// Calculate total scores
+	lumbaTotal := calculateTotal(lumbaScores)
+	koalaTotal := calculateTotal(koalaScores)
 
-	fmt.Print("Masukkan skor Kedua Tim Lumba-lumba: ")
-	lSkor2 = getInput(reader)
+	// Output total scores
+	fmt.Printf("\nTotal Skor Tim Lumba-lumba: %d\n", lumbaTotal)
+	fmt.Printf("Total Skor Tim Koala: %d\n", koalaTotal)
 
-	fmt.Print("Masukkan skor Kedua Tim Koala: ")
-	kSkor2 = getInput(reader)
+	// Calculate average scores
+	lumbaAverage := calculateAverage(lumbaTotal)
+	koalaAverage := calculateAverage(koalaTotal)
 
-	fmt.Print("Masukkan skor Ketiga Tim Lumba-lumba: ")
-	lSkor3 = getInput(reader)
+	// Output average scores
+	fmt.Printf("\nSkor rata-rata tim Lumba-lumba: %.2f\n", lumbaAverage)
+	fmt.Printf("Skor rata-rata tim Koala: %.2f\n", koalaAverage)
 
-	fmt.Print("Masukkan skor Ketiga Tim Koala: ")
-	kSkor3 = getInput(reader)
-
-	lumbaSkor = lSkor1 + lSkor2 + lSkor3
-	fmt.Printf("\nTotal Skor Tim Lumba-lumba: %d\n", lumbaSkor)
-	koalaSkor = kSkor1 + kSkor2 + kSkor3
-	fmt.Printf("Total Skor Tim Koala: %d\n", koalaSkor)
-
-	lumbaLumbaRataRata := float64(lumbaSkor) / 3
-	koalaRataRata := float64(koalaSkor) / 3
-	fmt.Printf("\nSkor rata-rata tim Lumba-lumba: %f\n", lumbaLumbaRataRata)
-	fmt.Printf("Skor rata-rata tim Koala: %f\n", koalaRataRata)
-
-	// Data 1
-	if lumbaLumbaRataRata > koalaRataRata {
-		fmt.Println("\nTim Lumba-lumba Menang!")
-	} else if koalaRataRata > lumbaLumbaRataRata {
-		fmt.Println("\nTim Koala Menang!")
-	} else {
-		fmt.Println("\nPertandingan Seri")
-	}
-
-	// Data Bonus 1
-	//if lumbaLumbaRataRata > koalaRataRata && lumbaLumbaRataRata >= 100 {
-	//	fmt.Println("\nTim Lumba-lumba menang!")
-	//} else if koalaRataRata > lumbaLumbaRataRata && koalaRataRata >= 100 {
-	//	fmt.Println("\nTim Koala menang!")
-	//} else {
-	//	fmt.Println("\nTidak ada pemenang karena skor di bawah 100.")
-	//}
-
-	// Data Bonus 2
-	//if lumbaLumbaRataRata > koalaRataRata && lumbaLumbaRataRata >= 100 {
-	//	fmt.Println("\nTim Lumba-lumba menang!")
-	//} else if koalaRataRata > lumbaLumbaRataRata && koalaRataRata >= 100 {
-	//	fmt.Println("\nTim Koala menang!")
-	//} else if (lumbaLumbaRataRata == koalaRataRata && lumbaLumbaRataRata >= 100) ||
-	//	(koalaRataRata == lumbaLumbaRataRata && koalaRataRata >= 100) {
-	//	fmt.Println("\nPertandingan Seri")
-	//} else {
-	//	fmt.Println("\nTidak ada pemenang karena skor di bawah 100.")
-	//}
+	// Determine the winner or if it's a draw
+	printResult(lumbaAverage, koalaAverage)
 }
 
+// Function to input scores for a team
+func inputScores(reader *bufio.Reader, team string, scores *[]int) {
+	for i := 1; i <= 3; i++ {
+		fmt.Printf("Masukkan skor Tim %s ke-%d: ", team, i)
+		score := getInput(reader)
+		*scores = append(*scores, score)
+	}
+}
+
+// Function to calculate total score
+func calculateTotal(scores []int) int {
+	total := 0
+	for _, score := range scores {
+		total += score
+	}
+	return total
+}
+
+// Function to calculate average score
+func calculateAverage(total int) float64 {
+	return float64(total) / 3
+}
+
+// Function to get input from user
 func getInput(reader *bufio.Reader) int {
 	input, _ := reader.ReadString('\n')
 	input = strings.TrimSpace(input)
 	value, _ := strconv.Atoi(input)
 	return value
+}
+
+// Function to print the result of the match
+func printResult(lumbaAvg, koalaAvg float64) {
+	switch {
+	case lumbaAvg > koalaAvg:
+		fmt.Println("\nTim Lumba-lumba Menang!")
+	case koalaAvg > lumbaAvg:
+		fmt.Println("\nTim Koala Menang!")
+	default:
+		fmt.Println("\nPertandingan Seri")
+	}
 }
